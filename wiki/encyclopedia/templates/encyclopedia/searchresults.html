@@ -1,0 +1,7 @@
+{%extends 'encyclopedia/layout.html'%} {%block body%} {% for close_match in close_matches %}
+<ul>
+  <li>
+    <a href="{% url 'encyclopedia:display_content' close_match %}">{{close_match}}</a>
+  </li>
+</ul>
+{% endfor %} {% endblock %} {%block search%} {%endblock%}
