@@ -5,6 +5,7 @@ from django.urls import reverse
 from difflib import get_close_matches
 from django.conf import settings
 import os.path
+import random
 from . import forms
 
 
@@ -77,3 +78,8 @@ def edit_page(request, title):
 
 
     return render(request, "encyclopedia/editpage.html", {"editpage_form": forms.EditPage(initial=initial_data)})
+
+
+def random_entry(request):
+    random_title = random.choice(util.list_entries())
+    return render(request, "encyclopedia/content.html", {"title":random_title, "content":random_title})
