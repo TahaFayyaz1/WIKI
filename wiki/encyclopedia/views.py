@@ -4,9 +4,10 @@ from . import util
 from django.urls import reverse
 from difflib import get_close_matches
 from django.conf import settings
+from . import forms
 import os.path
 import random
-from . import forms
+import markdown2
 
 
 
@@ -35,7 +36,7 @@ def index(request):
 
 
 def display_content (request, title):
-    content=util.get_entry(title)
+    content=markdown2.markdown(util.get_entry(title))
     if content is None:
         return render (request, "encyclopedia/error.html", {"title": title})
     else:
@@ -56,7 +57,7 @@ def create_new_page (request):
                 newpagefile = open(os.path.join(settings.BASE_DIR, 'entries', f"{title}.md"), "w")
                 newpagefile.write(description)
                 newpagefile.close()
-                return render(request, "encyclopedia/content.html", {"title": title, "content": description})        
+                return render(request, "encyclopedia/content.html", {"title": title, "content": markdown2.markdown(description)})        
 
     return render (request, "encyclopedia/createnewpage.html",{"newpage_form": forms.NewPage()})
 
@@ -82,4 +83,4 @@ def edit_page(request, title):
 
 def random_entry(request):
     random_title = random.choice(util.list_entries())
-    return render(request, "encyclopedia/content.html", {"title":random_title, "content":random_title})
+    return render(request, "encyclopedia/content.html", {"title":random_title, "content":markdown2.markdown(util.get_entry(random_title))})
