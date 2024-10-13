@@ -10,7 +10,7 @@
 </ul>
 {% endfor %} {% endblock %} {%block search%}
 
-<form action="{% url 'encyclopedia:index' %}" method="post">
+<form method="post">
   {% csrf_token %} {{search_form}}
   <input type="submit" />
 </form>

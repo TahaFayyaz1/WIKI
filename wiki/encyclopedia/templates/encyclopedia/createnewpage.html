@@ -1,7 +1,7 @@
 {% extends "encyclopedia/layout.html" %} {% block body %} 
 
-<form action="{% url 'encyclopedia:create_new_page' %}" method="post">
-    {% csrf_token %} {{newpage}}
+<form method="post">
+    {% csrf_token %} {{newpage_form}}
 
     <input type="submit" />
 </form>

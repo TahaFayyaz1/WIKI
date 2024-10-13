@@ -1,16 +1,17 @@
 from django.shortcuts import render
 from django.http  import HttpResponse,  HttpResponseRedirect
-from django import forms
 from . import util
 from django.urls import reverse
 from difflib import get_close_matches
 from django.conf import settings
 import os.path
+from . import forms
+
 
 
 def index(request):
     if request.method== "POST":
-        search_form= SearchForm(request.POST)
+        search_form= forms.SearchForm(request.POST)
 
         if search_form.is_valid():
             search = search_form.cleaned_data["search"]
@@ -26,7 +27,7 @@ def index(request):
 
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries(),
-        "search_form": SearchForm()
+        "search_form": forms.SearchForm()
     })
 
 
@@ -42,7 +43,7 @@ def display_content (request, title):
 
 def create_new_page (request):
     if request.method=="POST":
-        newpagedata = NewPage(request.POST)
+        newpagedata = forms.NewPage(request.POST)
         
         if newpagedata.is_valid():
             title = newpagedata.cleaned_data["title"]
@@ -56,15 +57,23 @@ def create_new_page (request):
                 newpagefile.close()
                 return render(request, "encyclopedia/content.html", {"title": title, "content": description})        
 
-    return render (request, "encyclopedia/createnewpage.html",{"newpage": NewPage()})
+    return render (request, "encyclopedia/createnewpage.html",{"newpage_form": forms.NewPage()})
 
 
+def edit_page(request, title):
+    initial_data = {'edit_discription':util.get_entry(title)}
+    if request.method=="POST":
+        edit_page_data = forms.EditPage(request.POST)
+
+        if edit_page_data.is_valid():
+            edit_discription=edit_page_data.cleaned_data["edit_discription"]
+            editpagefile = open(os.path.join(settings.BASE_DIR, 'entries', f"{title}.md"), "w")
+            editpagefile.write(edit_discription)
+            editpagefile.close()
+            return render(request, "encyclopedia/content.html", {"title": title, "content":edit_discription})
+
+        else:
+            HttpResponse ("Error")
 
 
-class SearchForm(forms.Form):
-    search=forms.CharField(label="search")
-
-
-class NewPage (forms.Form):
-    title=forms.CharField()
-    description= forms.CharField()
+    return render(request, "encyclopedia/editpage.html", {"editpage_form": forms.EditPage(initial=initial_data)})
