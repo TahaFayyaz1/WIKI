@@ -36,11 +36,11 @@ def index(request):
 
 
 def display_content (request, title):
-    content=markdown2.markdown(util.get_entry(title))
+    content=util.get_entry(title)
     if content is None:
         return render (request, "encyclopedia/error.html", {"title": title})
     else:
-        return render (request, "encyclopedia/content.html", {"content":content, "title":title})
+        return render (request, "encyclopedia/content.html", {"content":markdown2.markdown(content), "title":title})
     
 
 def create_new_page (request):
