@@ -20,7 +20,12 @@ def index(request):
             if util.get_entry(search) is not None:
                 return HttpResponseRedirect(reverse("encyclopedia:display_content", args = [search]))
             else:
-                return render(request, "encyclopedia/searchresults.html", {"close_matches":get_close_matches(search, util.list_entries())})
+                close_matches = get_close_matches(search, util.list_entries())
+                print (close_matches)
+                if not close_matches:
+                    return render(request, "encyclopedia/closematcherror.html")
+                else:
+                    return render(request, "encyclopedia/searchresults.html", {"close_matches": close_matches})
 
 
         else:

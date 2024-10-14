@@ -1,0 +1,5 @@
+{%extends 'encyclopedia/layout.html'%} {%block title%} Error {%endblock%}
+{%block body%}
+<h1>No similar search result found!</h1>
+<a href="{% url 'encyclopedia:index' %}">Return to Home Page</a>
+{%endblock%}
